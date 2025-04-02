@@ -49,6 +49,7 @@ export const useAuth = () => {
           },
         },
       });
+      navigate('/login');
       return isSignUpComplete;
     } catch (error) {
       console.error('Error signing up:', error);
