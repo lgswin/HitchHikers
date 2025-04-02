@@ -59,13 +59,13 @@ const Header = () => {
             <Link to="/schedules" className="text-gray-600 hover:text-gray-900">
               Schedules
             </Link>
+            <Link to="/profile" className="text-gray-600 hover:text-gray-900">
+              Profile
+            </Link>
             {isAuthenticated ? (
               <>
                 <div className="flex items-center space-x-2">
                   <span className="text-gray-600">Welcome, {user?.email}</span>
-                  <Link to="/profile" className="text-gray-600 hover:text-gray-900">
-                    Profile
-                  </Link>
                   <button
                     onClick={handleSignOut}
                     className="text-gray-600 hover:text-gray-900"
@@ -75,14 +75,9 @@ const Header = () => {
                 </div>
               </>
             ) : (
-              <>
-                <Link to="/login" className="text-gray-600 hover:text-gray-900">
-                  Login
-                </Link>
-                <Link to="/register" className="text-gray-600 hover:text-gray-900">
-                  Register
-                </Link>
-              </>
+              <Link to="/login" className="text-gray-600 hover:text-gray-900">
+                Login
+              </Link>
             )}
           </div>
 
@@ -126,18 +121,18 @@ const Header = () => {
             >
               Schedules
             </Link>
+            <Link
+              to="/profile"
+              className="block text-gray-600 hover:text-gray-900"
+              onClick={toggleMenu}
+            >
+              Profile
+            </Link>
             {isAuthenticated ? (
               <>
                 <div className="block text-gray-600">
                   Welcome, {user?.email}
                 </div>
-                <Link
-                  to="/profile"
-                  className="block text-gray-600 hover:text-gray-900"
-                  onClick={toggleMenu}
-                >
-                  Profile
-                </Link>
                 <button
                   onClick={handleSignOut}
                   className="block text-gray-600 hover:text-gray-900"
@@ -146,35 +141,26 @@ const Header = () => {
                 </button>
               </>
             ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="block text-gray-600 hover:text-gray-900"
-                  onClick={toggleMenu}
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="block text-gray-600 hover:text-gray-900"
-                  onClick={toggleMenu}
-                >
-                  Register
-                </Link>
-              </>
+              <Link
+                to="/login"
+                className="block text-gray-600 hover:text-gray-900"
+                onClick={toggleMenu}
+              >
+                Login
+              </Link>
             )}
           </div>
         )}
 
         {/* Debug Information */}
-        {process.env.NODE_ENV === 'development' && (
+        {/* {process.env.NODE_ENV === 'development' && (
           <div className="mt-4 p-2 bg-gray-100 rounded text-xs">
             <div className="font-semibold">Auth Debug Info:</div>
             <pre className="whitespace-pre-wrap">
               {JSON.stringify(authDebugInfo, null, 2)}
             </pre>
           </div>
-        )}
+        )} */}
       </nav>
     </header>
   );
