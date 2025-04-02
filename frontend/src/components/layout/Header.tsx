@@ -1,10 +1,35 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, isAuthenticated, signOut } = useAuth();
+  const { user, isAuthenticated, isInitialized, signOut } = useAuth();
+  const [authDebugInfo, setAuthDebugInfo] = useState({
+    isInitialized: false,
+    isAuthenticated: false,
+    userEmail: '',
+    timestamp: new Date().toISOString()
+  });
+
+  useEffect(() => {
+    setAuthDebugInfo({
+      isInitialized,
+      isAuthenticated,
+      userEmail: user?.email || '',
+      timestamp: new Date().toISOString()
+    });
+  }, [isInitialized, isAuthenticated, user]);
+
+  useEffect(() => {
+    // Log authentication state changes
+    console.log('Auth State:', {
+      isInitialized,
+      isAuthenticated,
+      user: user ? { email: user.email } : null,
+      timestamp: new Date().toISOString()
+    });
+  }, [isInitialized, isAuthenticated, user]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -36,15 +61,18 @@ const Header = () => {
             </Link>
             {isAuthenticated ? (
               <>
-                <Link to="/profile" className="text-gray-600 hover:text-gray-900">
-                  {user?.email || 'Profile'}
-                </Link>
-                <button
-                  onClick={handleSignOut}
-                  className="text-gray-600 hover:text-gray-900"
-                >
-                  Sign Out
-                </button>
+                <div className="flex items-center space-x-2">
+                  <span className="text-gray-600">Welcome, {user?.email}</span>
+                  <Link to="/profile" className="text-gray-600 hover:text-gray-900">
+                    Profile
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="text-gray-600 hover:text-gray-900"
+                  >
+                    Sign Out
+                  </button>
+                </div>
               </>
             ) : (
               <>
@@ -100,12 +128,15 @@ const Header = () => {
             </Link>
             {isAuthenticated ? (
               <>
+                <div className="block text-gray-600">
+                  Welcome, {user?.email}
+                </div>
                 <Link
                   to="/profile"
                   className="block text-gray-600 hover:text-gray-900"
                   onClick={toggleMenu}
                 >
-                  {user?.email || 'Profile'}
+                  Profile
                 </Link>
                 <button
                   onClick={handleSignOut}
@@ -132,6 +163,16 @@ const Header = () => {
                 </Link>
               </>
             )}
+          </div>
+        )}
+
+        {/* Debug Information */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-4 p-2 bg-gray-100 rounded text-xs">
+            <div className="font-semibold">Auth Debug Info:</div>
+            <pre className="whitespace-pre-wrap">
+              {JSON.stringify(authDebugInfo, null, 2)}
+            </pre>
           </div>
         )}
       </nav>
