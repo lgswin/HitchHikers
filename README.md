@@ -31,14 +31,24 @@ All using a secure, scalable, and low-cost infrastructure powered by AWS.
 - **Amplify Auth SDK** for easy integration
 
 ### ✅ Backend (Serverless)
-- **AWS Lambda** – API functions (create, request, approve schedule, etc.)
-- **AWS API Gateway** – REST API exposure
-- **DynamoDB** – NoSQL database to store schedules and requests
+- **AWS Amplify**
+  - GraphQL API auto-generation (AppSync)
+  - Lambda function auto-deployment
+  - DynamoDB table auto-creation
+  - Real-time data synchronization
+  - API request/response auto-generation
+  - Backend resource auto-management
+  - Local development environment support
 
 ### ✅ CI/CD & Hosting
-- **GitHub Actions** – CI/CD automation (on push to `main`)
-- **AWS S3** – Static web hosting (React build output)
-- **AWS CloudFront** – CDN and HTTPS support
+- **AWS Amplify**
+  - Automated deployment (GitHub integration)
+  - Branch-based environment separation (dev, staging, prod)
+  - Preview deployment (Pull Request)
+  - CDN and HTTPS support
+  - Build optimization and caching
+  - Automatic rollback
+  - Monitoring and alerts
 
 ---
 
@@ -83,12 +93,40 @@ All using a secure, scalable, and low-cost infrastructure powered by AWS.
 
 ---
 
+## 📊 Monitoring & Logging
+
+### ✅ CloudWatch Integration
+- Application metrics monitoring
+- Lambda function performance tracking
+- API Gateway request monitoring
+- DynamoDB table metrics
+- Custom metrics for business logic
+
+### ✅ Logging System
+- Centralized log collection
+- Log retention policies
+- Log analysis and search
+- Error tracking and debugging
+
+### ✅ Alerting System (SNS)
+- Email notifications for:
+  - System errors and exceptions
+  - Performance threshold breaches
+  - Security incidents
+  - Cost anomalies
+- Configurable alert thresholds
+- Multiple notification channels support
+
+### ✅ Dashboard
+- Real-time system health monitoring
+- Performance metrics visualization
+- Cost tracking and analysis
+- User activity monitoring
+
+---
+
 ## 🗂 Flow Diagram
 
 ![hitchhykers](https://github.com/user-attachments/assets/5ca099fd-d401-4a75-8c6d-78d9e2327d00)
 
 ---
-
-## 📄 License
-
-MIT License
