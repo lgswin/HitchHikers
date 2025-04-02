@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Amplify } from 'aws-amplify';
-import { signIn, signOut, getCurrentUser } from 'aws-amplify/auth';
+import { signIn, signOut, getCurrentUser, signUp } from 'aws-amplify/auth';
 import { useNavigate } from 'react-router-dom';
 
 interface AuthState {
@@ -38,6 +38,24 @@ export const useAuth = () => {
     }
   };
 
+  const signUpUser = async (username: string, password: string, email: string) => {
+    try {
+      const { isSignUpComplete } = await signUp({
+        username,
+        password,
+        options: {
+          userAttributes: {
+            email,
+          },
+        },
+      });
+      return isSignUpComplete;
+    } catch (error) {
+      console.error('Error signing up:', error);
+      throw error;
+    }
+  };
+
   const login = async (username: string, password: string) => {
     try {
       const user = await signIn({ username, password });
@@ -72,5 +90,6 @@ export const useAuth = () => {
     ...authState,
     signIn: login,
     signOut: logout,
+    signUp: signUpUser,
   };
 }; 
