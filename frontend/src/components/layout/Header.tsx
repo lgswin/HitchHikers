@@ -18,9 +18,8 @@ const styles = `
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, isAuthenticated, isInitialized, signOut } = useAuth();
+  const { user, isAuthenticated, signOut } = useAuth();
   const [authDebugInfo, setAuthDebugInfo] = useState({
-    isInitialized: false,
     isAuthenticated: false,
     userEmail: '',
     timestamp: new Date().toISOString()
@@ -28,22 +27,20 @@ const Header = () => {
 
   useEffect(() => {
     setAuthDebugInfo({
-      isInitialized,
       isAuthenticated,
       userEmail: user?.email || '',
       timestamp: new Date().toISOString()
     });
-  }, [isInitialized, isAuthenticated, user]);
+  }, [isAuthenticated, user]);
 
   useEffect(() => {
     // Log authentication state changes
     console.log('Auth State:', {
-      isInitialized,
       isAuthenticated,
       user: user ? { email: user.email } : null,
       timestamp: new Date().toISOString()
     });
-  }, [isInitialized, isAuthenticated, user]);
+  }, [isAuthenticated, user]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
