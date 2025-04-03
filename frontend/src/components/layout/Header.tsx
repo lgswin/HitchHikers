@@ -19,19 +19,19 @@ const styles = `
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, isAuthenticated, signOut } = useAuth();
-  const [authDebugInfo, setAuthDebugInfo] = useState({
-    isAuthenticated: false,
-    userEmail: '',
-    timestamp: new Date().toISOString()
-  });
+  // const [authDebugInfo, setAuthDebugInfo] = useState({
+  //   isAuthenticated: false,
+  //   userEmail: '',
+  //   timestamp: new Date().toISOString()
+  // });
 
-  useEffect(() => {
-    setAuthDebugInfo({
-      isAuthenticated,
-      userEmail: user?.email || '',
-      timestamp: new Date().toISOString()
-    });
-  }, [isAuthenticated, user]);
+  // useEffect(() => {
+  //   setAuthDebugInfo({
+  //     isAuthenticated,
+  //     userEmail: user?.email || '',
+  //     timestamp: new Date().toISOString()
+  //   });
+  // }, [isAuthenticated, user]);
 
   useEffect(() => {
     // Log authentication state changes

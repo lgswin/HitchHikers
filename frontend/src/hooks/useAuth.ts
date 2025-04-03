@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Amplify } from 'aws-amplify';
 import { signIn, signOut, getCurrentUser, signUp } from 'aws-amplify/auth';
 import { useNavigate } from 'react-router-dom';
 
