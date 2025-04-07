@@ -2,8 +2,24 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
+interface UserType {
+  username?: string;
+  attributes?: Record<string, string>;
+  signInDetails?: {
+    loginId?: string;
+  };
+  userId?: string;
+  // Add other properties as needed
+}
+
+interface AuthState {
+  isAuthenticated: boolean;
+  user: UserType | null;
+  isInitialized: boolean;
+}
+
 interface CognitoError {
-  name: string;
+  code: string;
   message: string;
 }
 
@@ -65,11 +81,11 @@ const Login = () => {
       const error = err as CognitoError;
       let errorMessage = 'An error occurred during sign in';
       
-      if (error.name === 'UserNotConfirmedException') {
+      if (error.code === 'UserNotConfirmedException') {
         errorMessage = 'Please confirm your email address';
-      } else if (error.name === 'NotAuthorizedException') {
+      } else if (error.code === 'NotAuthorizedException') {
         errorMessage = 'Invalid email or password';
-      } else if (error.name === 'UserNotFoundException') {
+      } else if (error.code === 'UserNotFoundException') {
         errorMessage = 'User not found. Please check your email';
       } else if (error.message) {
         errorMessage = error.message;
