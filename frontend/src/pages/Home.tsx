@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 
 interface ScheduleForm {
   departure: string;
   destination: string;
   date: string;
   time: string;
+  availableSeats: number;
 }
 
 interface Schedule extends ScheduleForm {
@@ -13,11 +15,13 @@ interface Schedule extends ScheduleForm {
 }
 
 const Home = () => {
-  const [scheduleForm, setScheduleForm] = useState<ScheduleForm>({
+  const { isAuthenticated } = useAuth();
+  const [formData, setFormData] = useState<ScheduleForm>({
     departure: '',
     destination: '',
     date: '',
     time: '',
+    availableSeats: 1,
   });
 
   // Dummy data for demonstration
@@ -28,7 +32,8 @@ const Home = () => {
       destination: 'Toronto',
       date: '2024-03-25',
       time: '09:00',
-      status: 'confirmed'
+      status: 'confirmed',
+      availableSeats: 4
     },
     {
       id: '2',
@@ -36,19 +41,20 @@ const Home = () => {
       destination: 'Hamilton',
       date: '2024-03-26',
       time: '14:30',
-      status: 'pending'
+      status: 'pending',
+      availableSeats: 2
     }
   ]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Implement schedule registration logic
-    console.log('Schedule form submitted:', scheduleForm);
+    console.log('Form submitted:', formData);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setScheduleForm(prev => ({
+    setFormData(prev => ({
       ...prev,
       [name]: value
     }));
@@ -66,108 +72,130 @@ const Home = () => {
   };
 
   return (
-    <div className="space-y-12">
-      {/* Welcome Section */}
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">
+    <div className="container mx-auto px-4 py-8">
+      {/* Title Section */}
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
           Welcome to Hitchhikers
         </h1>
-        <p className="text-xl text-gray-600 mb-8">
+        <p className="text-xl text-gray-600">
           Your trusted platform for ride sharing
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">For Passengers</h2>
-            <p className="text-gray-600">
-              Register your ride schedule and connect with reliable drivers.
-            </p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">For Drivers</h2>
-            <p className="text-gray-600">
-              Find ride schedules and earn money while helping others.
-            </p>
-          </div>
-        </div>
       </div>
 
-      {/* Schedule Registration Form */}
-      <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-6">Register Your Ride Schedule</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="flex flex-col md:flex-row gap-8 justify-center items-center">
+        {/* Schedule Registration Box */}
+        <div className="w-full max-w-xl bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Register Your Ride Schedule</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="departure" className="block text-sm font-medium text-gray-700 mb-1">
-                Departure Location
+              <label htmlFor="departure" className="block text-sm font-medium text-gray-700">
+                Departure
               </label>
               <input
                 type="text"
                 id="departure"
                 name="departure"
-                value={scheduleForm.departure}
+                value={formData.departure}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="Enter departure location"
                 required
               />
             </div>
+
             <div>
-              <label htmlFor="destination" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="destination" className="block text-sm font-medium text-gray-700">
                 Destination
               </label>
               <input
                 type="text"
                 id="destination"
                 name="destination"
-                value={scheduleForm.destination}
+                value={formData.destination}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="Enter destination"
                 required
               />
             </div>
-            <div>
-              <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
-                Date
-              </label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                value={scheduleForm.date}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                required
-              />
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+                  Date
+                </label>
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="time" className="block text-sm font-medium text-gray-700">
+                  Time
+                </label>
+                <input
+                  type="time"
+                  id="time"
+                  name="time"
+                  value={formData.time}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  required
+                />
+              </div>
             </div>
+
             <div>
-              <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-1">
-                Time
+              <label htmlFor="availableSeats" className="block text-sm font-medium text-gray-700">
+                Available Seats
               </label>
-              <input
-                type="time"
-                id="time"
-                name="time"
-                value={scheduleForm.time}
+              <select
+                id="availableSeats"
+                name="availableSeats"
+                value={formData.availableSeats}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 required
-              />
+              >
+                {[1, 2, 3, 4].map(num => (
+                  <option key={num} value={num}>{num}</option>
+                ))}
+              </select>
             </div>
-          </div>
-          <div className="flex justify-end">
+
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition-colors"
             >
               Register Schedule
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
+
+        {/* Map Box */}
+        <div className="w-full md:w-[400px] h-[400px] bg-white rounded-lg shadow-md overflow-hidden">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2877.839485518507!2d-79.4194165!3d43.653226!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d4cb90d7c63bd5%3A0x3320d3aecc97743a!2sToronto%2C%20ON!5e0!3m2!1sen!2sca!4v1647000000000!5m2!1sen!2sca"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="rounded-lg"
+          ></iframe>
+        </div>
       </div>
 
       {/* My Registered Schedules */}
-      <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+      <div className="bg-white p-6 rounded-lg shadow-md max-w-5xl mx-auto mt-8">
         <h2 className="text-2xl font-semibold mb-6">My Registered Schedules</h2>
         {mySchedules.length === 0 ? (
           <p className="text-gray-500 text-center py-4">No schedules registered yet.</p>
