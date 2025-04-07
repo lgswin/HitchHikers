@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../hooks/useAuth';
+import React, { useState } from 'react';
 
 interface ScheduleForm {
   departure: string;
@@ -22,7 +21,6 @@ interface Location {
 }
 
 const Home = () => {
-  const { isAuthenticated } = useAuth();
   const [formData, setFormData] = useState<ScheduleForm>({
     departure: '',
     destination: '',
@@ -40,8 +38,6 @@ const Home = () => {
     departure: null,
     destination: null,
   });
-
-  const [showMap, setShowMap] = useState(false);
 
   // Function to get coordinates from address using Google Geocoding API
   const getCoordinates = async (address: string): Promise<Location | null> => {
