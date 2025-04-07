@@ -34,10 +34,15 @@ const Header = () => {
   // }, [isAuthenticated, user]);
 
   useEffect(() => {
-    // Log authentication state changes
+    // Log authentication state changes with full user object
     console.log('Auth State:', {
       isAuthenticated,
-      user: user ? { email: user.email } : null,
+      user: user ? {
+        ...user,
+        attributes: user.attributes || {},
+        signInDetails: user.signInDetails || {},
+        timestamp: new Date().toISOString()
+      } : null,
       timestamp: new Date().toISOString()
     });
   }, [isAuthenticated, user]);
@@ -75,7 +80,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-8 relative">
+          <div className="hidden md:flex items-center space-x-8 relative">
             <Link to="/" className="text-gray-600 hover:text-gray-900">
               Home
             </Link>
@@ -85,23 +90,28 @@ const Header = () => {
             <Link to="/profile" className="text-gray-600 hover:text-gray-900">
               Profile
             </Link>
-            {isAuthenticated ? (
-              <>
-                <div className="flex items-center space-x-2">
-                  <span className="text-gray-600">Welcome, {user?.email}</span>
+            <div className="flex items-center gap-4">
+              {isAuthenticated ? (
+                <>
+                  <span className="text-sm text-gray-600">
+                    {user?.signInDetails.loginId || 'User'}
+                  </span>
                   <button
                     onClick={handleSignOut}
-                    className="text-gray-600 hover:text-gray-900"
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition-colors"
                   >
-                    Sign Out
+                    Logout
                   </button>
-                </div>
-              </>
-            ) : (
-              <Link to="/login" className="text-gray-600 hover:text-gray-900">
-                Login
-              </Link>
-            )}
+                </>
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  Login
+                </Link>
+              )}
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -130,48 +140,56 @@ const Header = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden mt-4 space-y-4">
-            <Link
-              to="/"
-              className="block text-gray-600 hover:text-gray-900"
-              onClick={toggleMenu}
-            >
-              Home
-            </Link>
-            <Link
-              to="/schedules"
-              className="block text-gray-600 hover:text-gray-900"
-              onClick={toggleMenu}
-            >
-              Schedules
-            </Link>
-            <Link
-              to="/profile"
-              className="block text-gray-600 hover:text-gray-900"
-              onClick={toggleMenu}
-            >
-              Profile
-            </Link>
-            {isAuthenticated ? (
-              <>
-                <div className="block text-gray-600">
-                  Welcome, {user?.email}
-                </div>
-                <button
-                  onClick={handleSignOut}
-                  className="block text-gray-600 hover:text-gray-900"
-                >
-                  Sign Out
-                </button>
-              </>
-            ) : (
+            <div className="flex items-center space-x-4">
               <Link
-                to="/login"
-                className="block text-gray-600 hover:text-gray-900"
+                to="/"
+                className="text-gray-600 hover:text-gray-900"
                 onClick={toggleMenu}
               >
-                Login
+                Home
               </Link>
-            )}
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link
+                to="/schedules"
+                className="text-gray-600 hover:text-gray-900"
+                onClick={toggleMenu}
+              >
+                Schedules
+              </Link>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link
+                to="/profile"
+                className="text-gray-600 hover:text-gray-900"
+                onClick={toggleMenu}
+              >
+                Profile
+              </Link>
+            </div>
+            <div className="flex items-center space-x-4">
+              {isAuthenticated ? (
+                <>
+                  <span className="text-sm text-gray-600">
+                    {user?.username || 'User'}
+                  </span>
+                  <button
+                    onClick={handleSignOut}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition-colors"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-gray-600 hover:text-gray-900"
+                  onClick={toggleMenu}
+                >
+                  Login
+                </Link>
+              )}
+            </div>
           </div>
         )}
 

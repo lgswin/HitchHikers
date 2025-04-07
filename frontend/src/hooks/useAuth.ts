@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { signIn, signOut, getCurrentUser, signUp } from 'aws-amplify/auth';
 import { useNavigate } from 'react-router-dom';
+import { Hub } from 'aws-amplify/utils';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -18,6 +19,33 @@ export const useAuth = () => {
 
   useEffect(() => {
     checkAuthState();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = Hub.listen('auth', ({ payload }) => {
+      const { event, data } = payload;
+      console.log('Auth event:', event);
+      
+      switch (event) {
+        case 'signIn':
+          console.log('🔐 Login detected via Auth Hub:', data);
+          console.log('User signed in:', data);
+          checkAuthState();
+          break;
+        case 'signOut':
+          console.log('User signed out');
+          checkAuthState();
+          break;
+        case 'signIn_failure':
+          console.error('Sign in failed:', data);
+          break;
+        default:
+          console.error('else??', data);
+          break;
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const checkAuthState = async () => {
@@ -58,10 +86,16 @@ export const useAuth = () => {
 
   const login = async (username: string, password: string) => {
     try {
-      const user = await signIn({ username, password });
+      const signInOutput = await signIn({ username, password });
+      console.log("Sign in output:", signInOutput);
+      
+      // Get current user details after successful sign in
+      const currentUser = await getCurrentUser();
+      console.log("Current user details:", currentUser);
+      
       setAuthState({
         isAuthenticated: true,
-        user,
+        user: currentUser,
         loading: false,
       });
       navigate('/');
@@ -92,4 +126,4 @@ export const useAuth = () => {
     signOut: logout,
     signUp: signUpUser,
   };
-}; 
+};
