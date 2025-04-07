@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 
 interface ScheduleForm {
@@ -7,11 +7,18 @@ interface ScheduleForm {
   date: string;
   time: string;
   availableSeats: number;
+  luggageCount: number;
+  details: string;
 }
 
 interface Schedule extends ScheduleForm {
   id: string;
   status: 'pending' | 'confirmed' | 'cancelled';
+}
+
+interface Location {
+  lat: number;
+  lng: number;
 }
 
 const Home = () => {
@@ -22,7 +29,68 @@ const Home = () => {
     date: '',
     time: '',
     availableSeats: 1,
+    luggageCount: 0,
+    details: '',
   });
+
+  const [locations, setLocations] = useState<{
+    departure: Location | null;
+    destination: Location | null;
+  }>({
+    departure: null,
+    destination: null,
+  });
+
+  const [showMap, setShowMap] = useState(false);
+
+  // Function to get coordinates from address using Google Geocoding API
+  const getCoordinates = async (address: string): Promise<Location | null> => {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          address
+        )}&key=AIzaSyB78TpzN34nfS5Jn32rX4KH_gCB_tszQ_4`
+      );
+      const data = await response.json();
+      if (data.results && data.results[0]) {
+        const { lat, lng } = data.results[0].geometry.location;
+        return { lat, lng };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error getting coordinates:', error);
+      return null;
+    }
+  };
+
+  // Function to handle location search
+  const handleSearchLocation = async (type: 'departure' | 'destination') => {
+    const address = formData[type];
+    if (address) {
+      const coords = await getCoordinates(address);
+      setLocations(prev => ({ ...prev, [type]: coords }));
+    }
+  };
+
+  // Generate map URL
+  const getMapUrl = () => {
+    const baseUrl = 'https://www.google.com/maps/embed/v1/place';
+    const apiKey = 'AIzaSyB78TpzN34nfS5Jn32rX4KH_gCB_tszQ_4';
+    let center = '43.653226,-79.4194165'; // Default to Toronto
+
+    if (locations.departure && locations.destination) {
+      // Center map between departure and destination
+      center = `${(locations.departure.lat + locations.destination.lat) / 2},${
+        (locations.departure.lng + locations.destination.lng) / 2
+      }`;
+    } else if (locations.departure) {
+      center = `${locations.departure.lat},${locations.departure.lng}`;
+    } else if (locations.destination) {
+      center = `${locations.destination.lat},${locations.destination.lng}`;
+    }
+
+    return `${baseUrl}?key=${apiKey}&q=${center}&zoom=12`;
+  };
 
   // Dummy data for demonstration
   const [mySchedules] = useState<Schedule[]>([
@@ -33,7 +101,8 @@ const Home = () => {
       date: '2024-03-25',
       time: '09:00',
       status: 'confirmed',
-      availableSeats: 4
+      availableSeats: 4,
+      details: ''
     },
     {
       id: '2',
@@ -42,7 +111,8 @@ const Home = () => {
       date: '2024-03-26',
       time: '14:30',
       status: 'pending',
-      availableSeats: 2
+      availableSeats: 2,
+      details: ''
     }
   ]);
 
@@ -52,7 +122,7 @@ const Home = () => {
     console.log('Form submitted:', formData);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -92,32 +162,50 @@ const Home = () => {
               <label htmlFor="departure" className="block text-sm font-medium text-gray-700">
                 Departure
               </label>
-              <input
-                type="text"
-                id="departure"
-                name="departure"
-                value={formData.departure}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Enter departure location"
-                required
-              />
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  id="departure"
+                  name="departure"
+                  value={formData.departure}
+                  onChange={handleChange}
+                  className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="Enter departure location"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => handleSearchLocation('departure')}
+                  className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md transition-colors whitespace-nowrap"
+                >
+                  Search
+                </button>
+              </div>
             </div>
 
             <div>
               <label htmlFor="destination" className="block text-sm font-medium text-gray-700">
                 Destination
               </label>
-              <input
-                type="text"
-                id="destination"
-                name="destination"
-                value={formData.destination}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Enter destination"
-                required
-              />
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  id="destination"
+                  name="destination"
+                  value={formData.destination}
+                  onChange={handleChange}
+                  className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="Enter destination"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => handleSearchLocation('destination')}
+                  className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md transition-colors whitespace-nowrap"
+                >
+                  Search
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -152,37 +240,74 @@ const Home = () => {
               </div>
             </div>
 
-            <div>
-              <label htmlFor="availableSeats" className="block text-sm font-medium text-gray-700">
-                Available Seats
-              </label>
-              <select
-                id="availableSeats"
-                name="availableSeats"
-                value={formData.availableSeats}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                required
-              >
-                {[1, 2, 3, 4].map(num => (
-                  <option key={num} value={num}>{num}</option>
-                ))}
-              </select>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="availableSeats" className="block text-sm font-medium text-gray-700">
+                  Available Seats
+                </label>
+                <select
+                  id="availableSeats"
+                  name="availableSeats"
+                  value={formData.availableSeats}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  required
+                >
+                  {[1, 2, 3, 4].map(num => (
+                    <option key={num} value={num}>{num}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="luggageCount" className="block text-sm font-medium text-gray-700">
+                  Luggage Count
+                </label>
+                <select
+                  id="luggageCount"
+                  name="luggageCount"
+                  value={formData.luggageCount}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  required
+                >
+                  {[0, 1, 2, 3, 4, 5].map(num => (
+                    <option key={num} value={num}>{num}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition-colors"
-            >
-              Register Schedule
-            </button>
+            <div>
+              <label htmlFor="details" className="block text-sm font-medium text-gray-700">
+                Additional Details
+              </label>
+              <textarea
+                id="details"
+                name="details"
+                value={formData.details}
+                onChange={handleChange}
+                rows={4}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Enter any additional details about your ride (e.g., vehicle type, luggage space, preferred music, etc.)"
+              />
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition-colors"
+              >
+                Register Schedule
+              </button>
+            </div>
           </form>
         </div>
 
-        {/* Map Box */}
+        {/* Map Box - Always visible */}
         <div className="w-full md:w-[400px] h-[400px] bg-white rounded-lg shadow-md overflow-hidden">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2877.839485518507!2d-79.4194165!3d43.653226!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d4cb90d7c63bd5%3A0x3320d3aecc97743a!2sToronto%2C%20ON!5e0!3m2!1sen!2sca!4v1647000000000!5m2!1sen!2sca"
+            src={getMapUrl()}
             width="100%"
             height="100%"
             style={{ border: 0 }}
