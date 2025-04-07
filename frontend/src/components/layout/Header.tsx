@@ -93,8 +93,8 @@ const Header = () => {
             <div className="flex items-center gap-4">
               {isAuthenticated ? (
                 <>
-                  <span className="text-sm text-gray-600">
-                    {user?.signInDetails.loginId || 'User'}
+                  <span className="text-sm font-medium text-gray-700">
+                    {user?.attributes?.email || user?.username || 'User'}
                   </span>
                   <button
                     onClick={handleSignOut}
@@ -170,8 +170,8 @@ const Header = () => {
             <div className="flex items-center space-x-4">
               {isAuthenticated ? (
                 <>
-                  <span className="text-sm text-gray-600">
-                    {user?.username || 'User'}
+                  <span className="text-sm font-medium text-gray-700">
+                    {user?.attributes?.email || user?.username || 'User'}
                   </span>
                   <button
                     onClick={handleSignOut}

@@ -89,25 +89,27 @@ const Home = () => {
   };
 
   // Dummy data for demonstration
-  const [mySchedules] = useState<Schedule[]>([
+  const [schedules] = useState<Schedule[]>([
     {
       id: '1',
-      departure: 'Waterloo',
-      destination: 'Toronto',
-      date: '2024-03-25',
+      departure: 'Toronto',
+      destination: 'Waterloo',
+      date: '2024-03-20',
       time: '09:00',
-      status: 'confirmed',
-      availableSeats: 4,
+      status: 'confirmed' as const,
+      availableSeats: 3,
+      luggageCount: 2,
       details: ''
     },
     {
       id: '2',
-      departure: 'Kitchener',
-      destination: 'Hamilton',
-      date: '2024-03-26',
-      time: '14:30',
-      status: 'pending',
+      departure: 'Waterloo',
+      destination: 'Toronto',
+      date: '2024-03-21',
+      time: '15:00',
+      status: 'pending' as const,
       availableSeats: 2,
+      luggageCount: 1,
       details: ''
     }
   ]);
@@ -318,11 +320,11 @@ const Home = () => {
       {/* My Registered Schedules */}
       <div className="bg-white p-6 rounded-lg shadow-md max-w-5xl mx-auto mt-8">
         <h2 className="text-2xl font-semibold mb-6">My Registered Schedules</h2>
-        {mySchedules.length === 0 ? (
+        {schedules.length === 0 ? (
           <p className="text-gray-500 text-center py-4">No schedules registered yet.</p>
         ) : (
           <div className="space-y-4">
-            {mySchedules.map((schedule) => (
+            {schedules.map((schedule) => (
               <div
                 key={schedule.id}
                 className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
