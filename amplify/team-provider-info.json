@@ -1,0 +1,24 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-hitchhikers-dev-5fe1b-authRole",
+      "UnauthRoleArn": "arn:aws:iam::180227528520:role/amplify-hitchhikers-dev-5fe1b-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::180227528520:role/amplify-hitchhikers-dev-5fe1b-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-hitchhikers-dev-5fe1b-deployment",
+      "UnauthRoleName": "amplify-hitchhikers-dev-5fe1b-unauthRole",
+      "StackName": "amplify-hitchhikers-dev-5fe1b",
+      "StackId": "arn:aws:cloudformation:us-east-1:180227528520:stack/amplify-hitchhikers-dev-5fe1b/a5c66390-148a-11f0-90e7-0e2a5d7821b3",
+      "AmplifyAppId": "d12sphuiya26sq"
+    },
+    "categories": {
+      "auth": {
+        "hitchhikers65b299ec": {},
+        "userPoolGroups": {}
+      },
+      "api": {
+        "hitchhikers": {}
+      }
+    }
+  }
+}

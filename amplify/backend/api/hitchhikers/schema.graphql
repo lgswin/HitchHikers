@@ -1,0 +1,149 @@
+type User @model @auth(rules: [{allow: owner}]) {
+  id: ID!
+  username: String!
+  email: String!
+  phone: String
+  profileImage: String
+  rating: Float
+  totalRides: Int
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+type Driver @model @auth(rules: [{allow: owner}]) {
+  id: ID!
+  username: String!
+  email: String!
+  phone: String
+  profileImage: String
+  rating: Float
+  totalTrips: Int
+  licenseNumber: String!
+  vehicleInfo: VehicleInfo!
+  isAvailable: Boolean!
+  documents: [Document!]
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+type Schedule @model @auth(rules: [{allow: owner}]) {
+  id: ID!
+  driverId: ID!
+  departure: String!
+  destination: String!
+  date: String!
+  time: String!
+  status: String! # PENDING, CONFIRMED, COMPLETED, CANCELLED
+  availableSeats: Int!
+  luggageCount: Int!
+  details: String
+  price: Float!
+  vehicleInfo: VehicleInfo!
+  bookings: [Booking!] @hasMany
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+type Booking @model @auth(rules: [{allow: owner}]) {
+  id: ID!
+  scheduleId: ID!
+  userId: ID!
+  driverId: ID!
+  status: String! # PENDING, APPROVED, REJECTED, COMPLETED, CANCELLED
+  numberOfSeats: Int!
+  luggageCount: Int!
+  price: Float!
+  paymentStatus: String!
+  paymentMethod: String
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+type VehicleInfo {
+  make: String!
+  model: String!
+  year: Int!
+  color: String!
+  licensePlate: String!
+  capacity: Int!
+}
+
+type Document {
+  type: String!
+  url: String!
+  verified: Boolean!
+}
+
+type Review @model @auth(rules: [{allow: owner}]) {
+  id: ID!
+  scheduleId: ID!
+  userId: ID!
+  driverId: ID!
+  rating: Int!
+  comment: String
+  type: String!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+# Input Types
+input ScheduleFilterInput {
+  driverId: ID
+  status: String
+  date: String
+  departure: String
+  destination: String
+}
+
+input BookingFilterInput {
+  scheduleId: ID
+  userId: ID
+  driverId: ID
+  status: String
+}
+
+input CreateScheduleInput {
+  driverId: ID!
+  departure: String!
+  destination: String!
+  date: String!
+  time: String!
+  availableSeats: Int!
+  luggageCount: Int!
+  details: String
+  price: Float!
+  vehicleInfo: VehicleInfoInput!
+}
+
+input UpdateScheduleInput {
+  id: ID!
+  status: String
+  availableSeats: Int
+  details: String
+  price: Float
+}
+
+input CreateBookingInput {
+  scheduleId: ID!
+  userId: ID!
+  driverId: ID!
+  numberOfSeats: Int!
+  luggageCount: Int!
+  price: Float!
+}
+
+input UpdateBookingInput {
+  id: ID!
+  status: String!
+  paymentStatus: String
+  paymentMethod: String
+}
+
+input VehicleInfoInput {
+  make: String!
+  model: String!
+  year: Int!
+  color: String!
+  licensePlate: String!
+  capacity: Int!
+} 

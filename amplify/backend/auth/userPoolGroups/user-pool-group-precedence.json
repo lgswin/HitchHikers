@@ -1,0 +1,14 @@
+[
+  {
+    "groupName": "admin",
+    "precedence": 1
+  },
+  {
+    "groupName": "users",
+    "precedence": 2
+  },
+  {
+    "groupName": "drivers",
+    "precedence": 3
+  }
+]
