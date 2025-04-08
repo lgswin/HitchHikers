@@ -42,10 +42,16 @@ const Home = () => {
   // Function to get coordinates from address using Google Geocoding API
   const getCoordinates = async (address: string): Promise<Location | null> => {
     try {
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+      if (!apiKey) {
+        console.error('Google Maps API key is not configured');
+        return null;
+      }
+
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
           address
-        )}&key=AIzaSyB78TpzN34nfS5Jn32rX4KH_gCB_tszQ_4`
+        )}&key=${apiKey}`
       );
       const data = await response.json();
       if (data.results && data.results[0]) {
@@ -70,22 +76,14 @@ const Home = () => {
 
   // Generate map URL
   const getMapUrl = () => {
-    const baseUrl = 'https://www.google.com/maps/embed/v1/place';
-    const apiKey = 'AIzaSyB78TpzN34nfS5Jn32rX4KH_gCB_tszQ_4';
-    let center = '43.653226,-79.4194165'; // Default to Toronto
-
-    if (locations.departure && locations.destination) {
-      // Center map between departure and destination
-      center = `${(locations.departure.lat + locations.destination.lat) / 2},${
-        (locations.departure.lng + locations.destination.lng) / 2
-      }`;
-    } else if (locations.departure) {
-      center = `${locations.departure.lat},${locations.departure.lng}`;
-    } else if (locations.destination) {
-      center = `${locations.destination.lat},${locations.destination.lng}`;
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) {
+      console.error('Google Maps API key is not configured');
+      return '';
     }
 
-    return `${baseUrl}?key=${apiKey}&q=${center}&zoom=12`;
+    const center = locations.departure || locations.destination || '43.653226,-79.4194165'; // Default to Toronto
+    return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${center}&zoom=12`;
   };
 
   // Dummy data for demonstration
