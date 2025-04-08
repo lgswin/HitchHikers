@@ -17,7 +17,7 @@ const FooterContent = styled(Container)(({ theme }) => ({
 
 export const Footer = () => {
   return (
-    <StyledFooter component="footer">
+    <StyledFooter>
       <FooterContent>
         <Typography variant="body2" color="text.secondary">
           © {new Date().getFullYear()} Hitchhikers. All rights reserved.
