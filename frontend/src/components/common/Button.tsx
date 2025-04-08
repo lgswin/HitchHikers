@@ -2,6 +2,7 @@ import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/materia
 import { styled } from '@mui/material/styles';
 
 interface ButtonProps extends MuiButtonProps {
+  children: React.ReactNode;
   variant?: 'contained' | 'outlined' | 'text';
   color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
   size?: 'small' | 'medium' | 'large';

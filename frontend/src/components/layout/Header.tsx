@@ -9,10 +9,10 @@ import {
   MenuItem,
   Box,
 } from '@mui/material';
-import { Menu as MenuIcon } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
 import { styled } from '@mui/material/styles';
+import MenuIcon from '@mui/icons-material/Menu';
+import { useAuth } from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -21,9 +21,15 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
 }));
 
+const Logo = styled(Typography)(({ theme }) => ({
+  fontWeight: 700,
+  fontSize: '1.5rem',
+  color: theme.palette.primary.main,
+  cursor: 'pointer',
+}));
+
 const NavButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.primary,
-  marginLeft: theme.spacing(2),
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
   },
@@ -31,7 +37,7 @@ const NavButton = styled(Button)(({ theme }) => ({
 
 export const Header = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, signOut } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -43,9 +49,13 @@ export const Header = () => {
   };
 
   const handleLogout = async () => {
-    await logout();
+    try {
+      await signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
     handleClose();
-    navigate('/login');
   };
 
   return (
@@ -55,17 +65,17 @@ export const Header = () => {
           edge="start"
           color="inherit"
           aria-label="menu"
-          sx={{ mr: 2 }}
-          onClick={() => navigate('/')}
+          sx={{ mr: 2, display: { sm: 'none' } }}
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Logo variant="h6" onClick={() => navigate('/')}>
           Hitchhikers
-        </Typography>
-        {isAuthenticated ? (
-          <>
-            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+        </Logo>
+        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+          {isAuthenticated ? (
+            <>
               <NavButton onClick={() => navigate('/schedules')}>
                 Schedules
               </NavButton>
@@ -75,34 +85,65 @@ export const Header = () => {
               <NavButton onClick={() => navigate('/profile')}>
                 Profile
               </NavButton>
-            </Box>
-            <IconButton
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={() => { handleClose(); navigate('/profile'); }}>
-                Profile
-              </MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
-            </Menu>
-          </>
-        ) : (
-          <Box>
-            <NavButton onClick={() => navigate('/login')}>
-              Login
-            </NavButton>
-            <NavButton onClick={() => navigate('/register')}>
-              Register
-            </NavButton>
-          </Box>
-        )}
+              <NavButton onClick={handleLogout}>Logout</NavButton>
+            </>
+          ) : (
+            <>
+              <NavButton onClick={() => navigate('/login')}>Login</NavButton>
+              <NavButton onClick={() => navigate('/register')}>
+                Register
+              </NavButton>
+            </>
+          )}
+        </Box>
+        <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+          <IconButton
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            {isAuthenticated ? (
+              <>
+                <MenuItem onClick={() => navigate('/schedules')}>
+                  Schedules
+                </MenuItem>
+                <MenuItem onClick={() => navigate('/requests')}>
+                  Requests
+                </MenuItem>
+                <MenuItem onClick={() => navigate('/profile')}>
+                  Profile
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </>
+            ) : (
+              <>
+                <MenuItem onClick={() => navigate('/login')}>Login</MenuItem>
+                <MenuItem onClick={() => navigate('/register')}>
+                  Register
+                </MenuItem>
+              </>
+            )}
+          </Menu>
+        </Box>
       </Toolbar>
     </StyledAppBar>
   );

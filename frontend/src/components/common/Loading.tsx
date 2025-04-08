@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { CircularProgress, Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 interface LoadingProps {
@@ -10,8 +10,8 @@ const LoadingContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: theme.spacing(4),
   gap: theme.spacing(2),
+  padding: theme.spacing(4),
 }));
 
 export const Loading = ({ message = 'Loading...' }: LoadingProps) => {

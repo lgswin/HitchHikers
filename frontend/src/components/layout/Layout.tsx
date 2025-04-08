@@ -3,24 +3,23 @@ import { styled } from '@mui/material/styles';
 import { Header } from './Header';
 import { Footer } from './Footer';
 
-const MainContent = styled(Box)(({ theme }) => ({
-  minHeight: 'calc(100vh - 64px - 120px)', // viewport height - header - footer
-  padding: theme.spacing(3),
-  display: 'flex',
-  flexDirection: 'column',
-}));
-
 interface LayoutProps {
   children: React.ReactNode;
 }
+
+const MainContent = styled(Box)(({ theme }) => ({
+  flex: 1,
+  padding: theme.spacing(3),
+  minHeight: '100vh',
+  display: 'flex',
+  flexDirection: 'column',
+}));
 
 export const Layout = ({ children }: LayoutProps) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
-      <MainContent>
-        {children}
-      </MainContent>
+      <MainContent>{children}</MainContent>
       <Footer />
     </Box>
   );

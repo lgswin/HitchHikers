@@ -2,7 +2,7 @@ import { Card as MuiCard, CardProps as MuiCardProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 interface CardProps extends MuiCardProps {
-  elevation?: number;
+  children: React.ReactNode;
 }
 
 const StyledCard = styled(MuiCard)(({ theme }) => ({
@@ -14,17 +14,6 @@ const StyledCard = styled(MuiCard)(({ theme }) => ({
   },
 }));
 
-export const Card = ({
-  children,
-  elevation = 1,
-  ...props
-}: CardProps) => {
-  return (
-    <StyledCard
-      elevation={elevation}
-      {...props}
-    >
-      {children}
-    </StyledCard>
-  );
+export const Card = ({ children, ...props }: CardProps) => {
+  return <StyledCard {...props}>{children}</StyledCard>;
 }; 

@@ -1,18 +1,23 @@
-import { Box, Container, Typography, Link } from '@mui/material';
+import { Box, Typography, Link } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const StyledFooter = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  borderTop: `1px solid ${theme.palette.divider}`,
-  padding: theme.spacing(3, 0),
+  padding: theme.spacing(3),
   marginTop: 'auto',
 }));
 
-const FooterContent = styled(Container)(({ theme }) => ({
+const FooterContent = styled(Box)(({ theme }) => ({
+  maxWidth: '1200px',
+  margin: '0 auto',
   display: 'flex',
-  flexDirection: 'column',
+  justifyContent: 'space-between',
   alignItems: 'center',
-  gap: theme.spacing(1),
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    textAlign: 'center',
+  },
 }));
 
 export const Footer = () => {
@@ -22,14 +27,14 @@ export const Footer = () => {
         <Typography variant="body2" color="text.secondary">
           © {new Date().getFullYear()} Hitchhikers. All rights reserved.
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Link href="/privacy" color="text.secondary" underline="hover">
+        <Box>
+          <Link href="#" color="inherit" sx={{ mr: 2 }}>
             Privacy Policy
           </Link>
-          <Link href="/terms" color="text.secondary" underline="hover">
+          <Link href="#" color="inherit" sx={{ mr: 2 }}>
             Terms of Service
           </Link>
-          <Link href="/contact" color="text.secondary" underline="hover">
+          <Link href="#" color="inherit">
             Contact Us
           </Link>
         </Box>
