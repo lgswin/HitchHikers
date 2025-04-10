@@ -9,8 +9,5 @@
   },
   "devDependencies": {
     "@types/node": "^22.13.17"
-  },
-  "scripts": {
-    "build": "vite build"
   }
 }
