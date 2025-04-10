@@ -145,7 +145,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="component-structure" name="Component Structure">
-    <mxGraphModel dx="906" dy="596" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="906" dy="596" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -206,7 +206,7 @@
         <mxCell id="profile" value="Profile" style="rounded=0;whiteSpace=wrap;html=1;" parent="pages" vertex="1">
           <mxGeometry x="20" y="190" width="160" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="conn3" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.82;exitY=0.979;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="frontend" source="layout" target="pages" edge="1">
+        <mxCell id="conn3" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.82;exitY=0.979;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;orthogonalLoop=0;comic=0;fixDash=0;flowAnimation=1;" parent="frontend" source="layout" target="pages" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="308" y="175" />
